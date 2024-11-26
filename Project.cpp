@@ -29,7 +29,7 @@ int main(void)
 
     Initialize();
 
-    while(exitFlag == false)  
+    while(gameMechs->getExitFlagStatus() == false)  
     {
         GetInput();
         RunLogic();
@@ -70,13 +70,12 @@ void RunLogic(void)
 }
 
 void DrawScreen(void)
-{ 
+{
     MacUILib_clearScreen();
 
     // Retrieve and display the player's position
     objPos pos = player->getPlayerPos();
     cout << "Player Position: (" << pos.pos->x << ", " << pos.pos->y << ")" << endl;
-    std::cout << "Captured Input: ASCII " << static_cast<int>(gameMechs->getInput()) << std::endl;
 
     // Display FSM state
     cout << "Player Direction: ";
