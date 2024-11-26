@@ -7,7 +7,7 @@ Player::Player(GameMechs* thisGMRef)
     myDir = FROZEN;
     playerPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, 
                         mainGameMechsRef->getBoardSizeY() / 2, 
-                        '*'); // Using '@' as player symbol
+                        '@'); // Using '@' as player symbol
 
     // more actions to be included
 
@@ -17,7 +17,8 @@ Player::Player(GameMechs* thisGMRef)
 Player::~Player()
 {
     // delete any heap members here
-
+    delete[] mainGameMechsRef;
+    mainGameMechsRef = nullptr;
     
 }
 

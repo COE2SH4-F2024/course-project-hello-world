@@ -75,18 +75,39 @@ void DrawScreen(void)
 
     // Retrieve and display the player's position
     objPos pos = player->getPlayerPos();
-    cout << "Player Position: (" << pos.pos->x << ", " << pos.pos->y << ")" << endl;
+    for(int i = 0; i < gameMechs->getBoardSizeY(); i++){
+        for(int j = 0; j < gameMechs->getBoardSizeX(); j++){
+            if(j == gameMechs->getBoardSizeX()-1){
+                MacUILib_printf("#\n");
+            }
+            else if(i == 0 || i == gameMechs->getBoardSizeY()-1 || j == 0){
+                MacUILib_printf("#");
+            }
+            else if(i == 7 && j == 18){
+                MacUILib_printf("M");
+            }
+            else if(i == 2 && j == 26){
+                MacUILib_printf("8");
+            }
+            else{
+                MacUILib_printf(" ");
+            }
+        }
+    }
+
+    MacUILib_printf("Player Position: (%d, %d)\n",player->getPlayerPos().getObjPos().pos->x,  player->getPlayerPos().getObjPos().pos->y);
+    //cout << "Player Position: (" << pos.pos->x << ", " << pos.pos->y << ")" << endl;
 
     // Display FSM state
     cout << "Player Direction: ";
     switch (player->getDirection()) {
-        case Player::UP: cout << "UP"; break;
-        case Player::DOWN: cout << "DOWN"; break;
-        case Player::LEFT: cout << "LEFT"; break;
-        case Player::RIGHT: cout << "RIGHT"; break;
-        case Player::FROZEN: cout << "FROZEN"; break;
+        case Player::UP: MacUILib_printf("UP\n"); break; //cout << "UP"; break;
+        case Player::DOWN: MacUILib_printf("DOWN\n"); break; //cout << "DOWN"; break;
+        case Player::LEFT: MacUILib_printf("LEFT\n"); break; //cout << "LEFT"; break;
+        case Player::RIGHT: MacUILib_printf("RIGHT\n"); break; //cout << "RIGHT"; break;
+        case Player::FROZEN: MacUILib_printf("FROZEN\n"); break; //cout << "FROZEN"; break;
     }
-    cout << endl;
+    //cout << endl;
 }
 
 void LoopDelay(void)
@@ -99,6 +120,8 @@ void CleanUp(void)
 {
     MacUILib_clearScreen();    
     delete player;
+    //player->~Player();
+    
 
     MacUILib_uninit();
 }
