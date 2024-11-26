@@ -6,6 +6,7 @@
 
 #include "objPos.h"
 #include "objPosArrayList.h"
+#include "food.h"
 
 using namespace std;
 
@@ -20,7 +21,7 @@ class GameMechs
         int boardSizeX;
         int boardSizeY;
 
-        objPos food;
+        objPos foodPos;
 
     public:
         GameMechs();
@@ -44,7 +45,7 @@ class GameMechs
         
         // More methods should be added here
         GameMechs(const GameMechs& other); // Copy constructor
-        GameMechs& operator=(const GameMechs& other); // Copy assignment 
+        GameMechs& operator=(const GameMechs& other); // Copy assignmen
 
 };
 

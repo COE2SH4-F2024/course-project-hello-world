@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "GameMechs.h"
 #include "objPosArrayList.h"
+#include "food.h"
 
 
 using namespace std;
@@ -12,6 +13,8 @@ using namespace std;
 
 GameMechs* gameMechs = nullptr;
 Player* player = nullptr;
+food* gameFood = nullptr; 
+
 
 bool exitFlag;
 
@@ -47,72 +50,79 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
     
-    cout << "Game initialized! Use W/A/S/D to move, ESC to exit." << endl;
     gameMechs = new GameMechs();
     player = new Player(gameMechs);
+    gameFood = new food();
+
+    objPos playerPos = player->getPlayerPos();
+    gameFood->generateFood(playerPos);
+
 
     exitFlag = false;
 }
 
 void GetInput(void)
 {
-   if (MacUILib_hasChar()) { // Check if input is available
-        char input = MacUILib_getChar(); // Get the input
-        gameMechs->setInput(input); // Set input in GameMechs
+   if (MacUILib_hasChar()) { 
+        char input = MacUILib_getChar(); 
+        gameMechs->setInput(input); 
     }
 }
 
 void RunLogic(void)
 {
-    player->updatePlayerDir(); // Update FSM state based on input
-    player->movePlayer();      // Move player based on the direction
-    gameMechs->clearInput();   // Clear input to prevent double processing
+    player->updatePlayerDir(); 
+    player->movePlayer();    
+
+    objPos foodPosition = gameFood->getFoodPos(); 
+    if (player->getPlayerPos().isPosEqual(&foodPosition)) {
+        gameMechs->incrementScore(); // i added increment food here
+        objPos playerPos = player->getPlayerPos(); 
+        gameFood->generateFood(playerPos); 
+    }
+
+    gameMechs->clearInput();  
 }
+
 
 void DrawScreen(void)
 {
     MacUILib_clearScreen();
 
-    // Retrieve and display the player's position
     objPos pos = player->getPlayerPos();
-    for(int i = 0; i < gameMechs->getBoardSizeY(); i++){
-        for(int j = 0; j < gameMechs->getBoardSizeX(); j++){
-            if(j == gameMechs->getBoardSizeX()-1){
+    for (int i = 0; i < gameMechs->getBoardSizeY(); i++) {
+        for (int j = 0; j < gameMechs->getBoardSizeX(); j++) {
+            if (j == gameMechs->getBoardSizeX() - 1) {
                 MacUILib_printf("#\n");
-            }
-            else if(i == 0 || i == gameMechs->getBoardSizeY()-1 || j == 0){
+            } else if (i == 0 || i == gameMechs->getBoardSizeY() - 1 || j == 0) {
                 MacUILib_printf("#");
-            }
-            else if(i == 7 && j == 18){
-                MacUILib_printf("M");
-            }
-            else if(i == 2 && j == 26){
-                MacUILib_printf("8");
-            }
-            else{
+            } else if (player->getPlayerPos().pos->y == i && player->getPlayerPos().pos->x == j) {
+                MacUILib_printf("%c", player->getPlayerPos().getSymbol());
+            } else if (gameFood->getFoodPos().pos->y == i && gameFood->getFoodPos().pos->x == j) {
+                MacUILib_printf("%c", gameFood->getFoodPos().getSymbol()); 
+            } else {
                 MacUILib_printf(" ");
             }
         }
     }
 
     MacUILib_printf("Player Position: (%d, %d)\n",player->getPlayerPos().getObjPos().pos->x,  player->getPlayerPos().getObjPos().pos->y);
-    //cout << "Player Position: (" << pos.pos->x << ", " << pos.pos->y << ")" << endl;
+
 
     // Display FSM state
     cout << "Player Direction: ";
     switch (player->getDirection()) {
-        case Player::UP: MacUILib_printf("UP\n"); break; //cout << "UP"; break;
-        case Player::DOWN: MacUILib_printf("DOWN\n"); break; //cout << "DOWN"; break;
-        case Player::LEFT: MacUILib_printf("LEFT\n"); break; //cout << "LEFT"; break;
-        case Player::RIGHT: MacUILib_printf("RIGHT\n"); break; //cout << "RIGHT"; break;
-        case Player::FROZEN: MacUILib_printf("FROZEN\n"); break; //cout << "FROZEN"; break;
+        case Player::UP: MacUILib_printf("UP\n"); break; 
+        case Player::DOWN: MacUILib_printf("DOWN\n"); break; 
+        case Player::LEFT: MacUILib_printf("LEFT\n"); break; 
+        case Player::RIGHT: MacUILib_printf("RIGHT\n"); break; 
+        case Player::FROZEN: MacUILib_printf("FROZEN\n"); break; 
     }
-    //cout << endl;
 }
 
 void LoopDelay(void)
 {
-    MacUILib_Delay(DELAY_CONST); // 0.1s delay
+    MacUILib_Delay(DELAY_CONST); 
 }
 
 
@@ -120,7 +130,8 @@ void CleanUp(void)
 {
     MacUILib_clearScreen();    
     delete player;
-    //player->~Player();
+    delete gameFood; 
+    delete gameMechs;
     
 
     MacUILib_uninit();

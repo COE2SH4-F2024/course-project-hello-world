@@ -7,7 +7,7 @@ Player::Player(GameMechs* thisGMRef)
     myDir = FROZEN;
     playerPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, 
                         mainGameMechsRef->getBoardSizeY() / 2, 
-                        '@'); // Using '@' as player symbol
+                        '*'); // Using '@' as player symbol
 
     // more actions to be included
 
@@ -33,15 +33,19 @@ void Player::updatePlayerDir()
 
   char input = mainGameMechsRef->getInput(); // Get the most recent input
 
-    if (input == 'w' && myDir != UP && (myDir == FROZEN || myDir == LEFT || myDir == RIGHT)) {
+    if (input == 'w' && (myDir == RIGHT || myDir == LEFT || myDir == FROZEN) && playerPos.pos->x != 0 && playerPos.pos->x != 19) {
         myDir = UP;
-    } if (input == 's' && myDir != DOWN && (myDir == FROZEN || myDir == LEFT || myDir == RIGHT)) {
+        playerPos.pos->y--;
+    } else if (input == 's' && (myDir == RIGHT || myDir == LEFT || myDir == FROZEN) && playerPos.pos->x != 0 && playerPos.pos->x != 19) {
         myDir = DOWN;
-    } if (input == 'a' && myDir != LEFT && (myDir == FROZEN || myDir == UP || myDir == DOWN)) {
-        myDir = LEFT;
-    } if (input == 'd' && myDir != RIGHT && (myDir == FROZEN || myDir == UP || myDir == DOWN)) {
+        playerPos.pos->y++;
+    } else if (input == 'd' && (myDir == UP || myDir == DOWN || myDir == FROZEN) && playerPos.pos->y != 0 && playerPos.pos->y != 9) {
         myDir = RIGHT;
-    } if (input == 27) { // ESC key
+        playerPos.pos->x++;
+    } else if (input == 'a' && (myDir == UP || myDir == DOWN || myDir == FROZEN) && playerPos.pos->y != 0 && playerPos.pos->y != 9) {
+        myDir = LEFT;
+        playerPos.pos->x--;
+    } else if (input == 27) { // ESC key
         mainGameMechsRef->setExitTrue();
     }
 }
@@ -56,7 +60,7 @@ void Player::movePlayer()
             playerPos.pos->y--;
         }
     } else if (myDir == DOWN) {
-        if (playerPos.pos->y == mainGameMechsRef->getBoardSizeY() - 1) {
+        if (playerPos.pos->y >= mainGameMechsRef->getBoardSizeY() - 1) {
             playerPos.pos->y = 0; // Wrap around
         } else {
             playerPos.pos->y++;
@@ -68,7 +72,7 @@ void Player::movePlayer()
             playerPos.pos->x--;
         }
     } else if (myDir == RIGHT) {
-        if (playerPos.pos->x == mainGameMechsRef->getBoardSizeX() - 1) {
+        if (playerPos.pos->x >= mainGameMechsRef->getBoardSizeX() - 2) { // this made it loop around better
             playerPos.pos->x = 0; // Wrap around
         } else {
             playerPos.pos->x++;

@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-I. -g
-OBJ = GameMechs.o objPos.o objPosArrayList.o MacUILib.o Player.o Project.o 
+OBJ = GameMechs.o objPos.o objPosArrayList.o MacUILib.o Player.o Project.o food.o
 DEPS = *.h
 EXEC = Project
 
@@ -11,12 +11,11 @@ else
 	POSTLINKER = -lncurses
 endif
 
-%.o: %.cpp $(DEPENDS)
+%.o: %.cpp $(DEPS)
 	$(CC) ${OSSETTING} -c -o $@ $< $(CFLAGS)
 
 ${EXEC} : $(OBJ)
 	$(CC) ${OSSETTING} -o $@ $^ $(CFLAGS) ${POSTLINKER}
 
 clean :
-	rm -r ${OBJ} ${EXEC} ${EXEC}.exe
-
+	rm -f ${OBJ} ${EXEC} ${EXEC}.exe
