@@ -43,6 +43,9 @@ class GameMechs
         void incrementScore();
         
         // More methods should be added here
+        GameMechs(const GameMechs& other); // Copy constructor
+        GameMechs& operator=(const GameMechs& other); // Copy assignment 
+
 };
 
 #endif
