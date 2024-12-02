@@ -20,7 +20,7 @@ objPos::objPos(int xPos, int yPos, char sym)
 // [TODO] Implement the missing special member functions to meet the minimum four rule
 objPos::~objPos(){
 			
-	delete[] pos;
+	delete pos;
 	pos = nullptr;
 }
 

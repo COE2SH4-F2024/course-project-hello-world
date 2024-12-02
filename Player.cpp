@@ -19,7 +19,7 @@ Player::Player(GameMechs* thisGMRef, food* thisFood)
 Player::~Player()
 {
     // delete any heap members here
-    delete[] playerPosList;
+    delete playerPosList;
     
 }
 
