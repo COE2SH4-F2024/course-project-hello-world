@@ -10,9 +10,11 @@ GameMechs::GameMechs()
 {
     input = 0;
     exitFlag = false;
+    loseFlag = false;
     // default board size
     boardSizeX = 30; // columns
-    boardSizeY = 10; // rows
+    boardSizeY = 15; // rows
+    score = 0;
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
@@ -26,7 +28,7 @@ GameMechs::GameMechs(int boardX, int boardY)
 // do you need a destructor?
 GameMechs::~GameMechs()
 {
-
+    
 }
 
 bool GameMechs::getExitFlagStatus() const

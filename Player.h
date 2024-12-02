@@ -18,26 +18,31 @@ class Player
        /* i implmented this, from ppa3*/ 
         enum Dir { FROZEN, LEFT, RIGHT, UP, DOWN };
         
-        Player(GameMechs* thisGMRef);
+        Player(GameMechs* thisGMRef, food* thisFood);
         ~Player();
 
-        objPos getPlayerPos() const; // Upgrade this in iteration 3.       
+        objPosArrayList* getPlayerPos() const; // Upgrade this in iteration 3.       
         void updatePlayerDir();
         void movePlayer();
 
         Dir getDirection() const; //i added this
 
         // More methods to be added here
+        bool checkFoodConsumption();
+        void increasePlayerLength();
+        bool checkSelfCollision();
 
     private:
     
-        objPos playerPos; // Upgrade this in iteration 3.       
+        objPosArrayList* playerPosList; // Upgrade this in iteration 3.       
         
         /* i implmented this, from ppa3*/ 
         enum Dir myDir;
 
         // Need a reference to the Main Game Mechanisms
         GameMechs* mainGameMechsRef;
+
+        food* foodObj;
 };
 
 #endif

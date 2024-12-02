@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "GameMechs.h"
 #include "objPosArrayList.h"
-#include "food.h"
+#include "Food.h"
 
 
 using namespace std;
@@ -12,9 +12,8 @@ using namespace std;
 #define DELAY_CONST 100000
 
 GameMechs* gameMechs = nullptr;
-Player* player = nullptr;
 food* gameFood = nullptr; 
-
+Player* player = nullptr;
 
 bool exitFlag;
 
@@ -51,10 +50,11 @@ void Initialize(void)
     MacUILib_clearScreen();
     
     gameMechs = new GameMechs();
-    player = new Player(gameMechs);
-    gameFood = new food();
+    gameFood =  new food();
+    player =  new Player(gameMechs, gameFood);
 
-    objPos playerPos = player->getPlayerPos();
+
+    objPosArrayList* playerPos = player->getPlayerPos();
     gameFood->generateFood(playerPos);
 
 
@@ -71,15 +71,15 @@ void GetInput(void)
 
 void RunLogic(void)
 {
+   objPosArrayList* playerPos = player->getPlayerPos();
+    objPos foodPosition = gameFood->getFoodPos(); 
+    if (player->checkFoodConsumption()) {
+        player->increasePlayerLength();
+        gameFood->generateFood(playerPos); 
+    }   
     player->updatePlayerDir(); 
     player->movePlayer();    
 
-    objPos foodPosition = gameFood->getFoodPos(); 
-    if (player->getPlayerPos().isPosEqual(&foodPosition)) {
-        gameMechs->incrementScore(); // i added increment food here
-        objPos playerPos = player->getPlayerPos(); 
-        gameFood->generateFood(playerPos); 
-    }
 
     gameMechs->clearInput();  
 }
@@ -88,36 +88,69 @@ void RunLogic(void)
 void DrawScreen(void)
 {
     MacUILib_clearScreen();
-
-    objPos pos = player->getPlayerPos();
+    bool printChar;
+    objPosArrayList* playerPos = player->getPlayerPos();
+    //MacUILib_printf("(%d, %d)\n", playerPos->getHeadElement().pos->x, playerPos->getHeadElement().pos->y);
     for (int i = 0; i < gameMechs->getBoardSizeY(); i++) {
         for (int j = 0; j < gameMechs->getBoardSizeX(); j++) {
-            if (j == gameMechs->getBoardSizeX() - 1) {
+            printChar = true;
+            if (j == gameMechs->getBoardSizeX() - 1 && printChar) {
                 MacUILib_printf("#\n");
-            } else if (i == 0 || i == gameMechs->getBoardSizeY() - 1 || j == 0) {
+                printChar = false;
+            } 
+            else if ((i == 0 || i == gameMechs->getBoardSizeY() - 1 || j == 0) && printChar) {
                 MacUILib_printf("#");
-            } else if (player->getPlayerPos().pos->y == i && player->getPlayerPos().pos->x == j) {
-                MacUILib_printf("%c", player->getPlayerPos().getSymbol());
-            } else if (gameFood->getFoodPos().pos->y == i && gameFood->getFoodPos().pos->x == j) {
-                MacUILib_printf("%c", gameFood->getFoodPos().getSymbol()); 
-            } else {
-                MacUILib_printf(" ");
+                printChar = false;
+            } 
+            
+            
+            for(int k = 0; k < playerPos->getSize() && printChar; k++){
+                if(playerPos->getElement(k).pos->y == i && playerPos->getElement(k).pos->x == j){
+                    MacUILib_printf("%c", playerPos->getHeadElement().symbol);
+                    printChar = false;
+                }
             }
+                if(gameFood->getFoodPos().pos->y == i && gameFood->getFoodPos().pos->x == j && printChar){
+                    MacUILib_printf("%c", gameFood->getFoodPos().getSymbol()); 
+                    printChar = false;
+                }
+                else if(printChar){
+                    MacUILib_printf(" ");
+                }
+            
+            
+            
+
+
         }
     }
 
-    MacUILib_printf("Player Position: (%d, %d)\n",player->getPlayerPos().getObjPos().pos->x,  player->getPlayerPos().getObjPos().pos->y);
+    MacUILib_printf("Score:\t%d\n", gameMechs->getScore());
+
+    if(gameMechs->getExitFlagStatus() == true){
+        if(gameMechs->getLoseFlagStatus() == true){
+            MacUILib_printf("Game Over: You Lost!");
+        }
+        else{
+            MacUILib_printf("You have exited the game");
+        }
+
+    }
+
+    //MacUILib_printf("Player Position: (%d, %d)\n",player->getPlayerPos().getObjPos().pos->x,  player->getPlayerPos().getObjPos().pos->y);
 
 
     // Display FSM state
-    cout << "Player Direction: ";
-    switch (player->getDirection()) {
-        case Player::UP: MacUILib_printf("UP\n"); break; 
-        case Player::DOWN: MacUILib_printf("DOWN\n"); break; 
-        case Player::LEFT: MacUILib_printf("LEFT\n"); break; 
-        case Player::RIGHT: MacUILib_printf("RIGHT\n"); break; 
-        case Player::FROZEN: MacUILib_printf("FROZEN\n"); break; 
-    }
+    // MacUILib_printf("length: %d\n", playerPos->getSize());
+    // MacUILib_printf("score: %d\n", gameMechs->getScore());
+    // MacUILib_printf("Player Direction: ");
+    // switch (player->getDirection()) {
+    //     case Player::UP: MacUILib_printf("UP\n"); break; 
+    //     case Player::DOWN: MacUILib_printf("DOWN\n"); break; 
+    //     case Player::LEFT: MacUILib_printf("LEFT\n"); break; 
+    //     case Player::RIGHT: MacUILib_printf("RIGHT\n"); break; 
+    //     case Player::FROZEN: MacUILib_printf("FROZEN\n"); break; 
+    // }
 }
 
 void LoopDelay(void)
@@ -128,7 +161,7 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    MacUILib_clearScreen();    
+   
     delete player;
     delete gameFood; 
     delete gameMechs;

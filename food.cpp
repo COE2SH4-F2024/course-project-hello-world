@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "GameMechs.h"
 #include "objPosArrayList.h"
-#include "food.h"
+#include "Food.h"
 
 
 #include <cstdlib>
@@ -15,13 +15,25 @@ food::food() {
 }
 
 food::~food() {
+    
 }
 
-void food::generateFood(objPos blockOff) {
+void food::generateFood(objPosArrayList* blockOff) {
+    objPos elementLoc;
+    bool regenerate;
+
     do {
+        regenerate = false;
         foodPos.pos->x = 1 + std::rand() % 28; 
-        foodPos.pos->y = 1 + std::rand() % 8; 
-    } while (foodPos.isPosEqual(&blockOff)); 
+        foodPos.pos->y = 1 + std::rand() % 13; 
+        
+        for(int i = 0; i < blockOff->getSize(); i++){
+            elementLoc = blockOff->getElement(i);
+            if(foodPos.isPosEqual(&elementLoc)){
+            regenerate = true;
+            }
+        }
+    } while (regenerate); 
 
     foodPos.symbol = 'o'; 
 }
