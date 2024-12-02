@@ -6,91 +6,84 @@
 #include "objPosArrayList.h"
 #include <time.h>
 
-GameMechs::GameMechs()
-{
+// Default Constructor: Initializes the game mechanics with default values
+GameMechs::GameMechs() {
     input = 0;
     exitFlag = false;
     loseFlag = false;
-    // default board size
-    boardSizeX = 30; // columns
-    boardSizeY = 15; // rows
+    boardSizeX = 30; // Default board width
+    boardSizeY = 15; // Default board height
     score = 0;
 }
 
-GameMechs::GameMechs(int boardX, int boardY)
-{
+// Parameterized Constructor: Initializes the game mechanics with custom board size
+GameMechs::GameMechs(int boardX, int boardY) {
     input = 0;
     exitFlag = false;
-    boardSizeX = boardX; 
+    loseFlag = false;
+    boardSizeX = boardX;
     boardSizeY = boardY;
 }
 
-// do you need a destructor?
-GameMechs::~GameMechs()
-{
-    
-}
+// Destructor: Cleans up resources (if needed in future extensions)
+GameMechs::~GameMechs() {}
 
-bool GameMechs::getExitFlagStatus() const
-{
+// Returns the status of the exit flag
+bool GameMechs::getExitFlagStatus() const {
     return exitFlag;
 }
 
-bool GameMechs::getLoseFlagStatus() const
-{   
+// Returns the status of the lose flag
+bool GameMechs::getLoseFlagStatus() const {
     return loseFlag;
 }
-    
 
+// Returns the most recent input character
 char GameMechs::getInput() const {
     return input;
 }
 
-int GameMechs::getScore() const
-{
-    return score;  
+// Returns the current game score
+int GameMechs::getScore() const {
+    return score;
 }
 
-void GameMechs::incrementScore()
-{
-        score++;
+// Increments the game score by one
+void GameMechs::incrementScore() {
+    score++;
 }
 
-int GameMechs::getBoardSizeX() const
-{
+// Returns the board width
+int GameMechs::getBoardSizeX() const {
     return boardSizeX;
 }
 
-int GameMechs::getBoardSizeY() const
-{
+// Returns the board height
+int GameMechs::getBoardSizeY() const {
     return boardSizeY;
 }
 
-
-void GameMechs::setExitTrue()
-{
+// Sets the exit flag to true
+void GameMechs::setExitTrue() {
     exitFlag = true;
 }
 
-void GameMechs::setLoseFlag()
-{
+// Sets the lose flag to true
+void GameMechs::setLoseFlag() {
     loseFlag = true;
 }
 
-void GameMechs::setInput(char this_input)
-{
-        input = this_input;
-
+// Sets the input character
+void GameMechs::setInput(char this_input) {
+    input = this_input;
 }
 
-void GameMechs::clearInput()
-{
-        input = 0;
+// Clears the input character
+void GameMechs::clearInput() {
+    input = 0;
 }
 
-// More methods should be added here
-
-//Copy Constructor
+// Copy Constructor: Performs a deep copy of the other GameMechs object
 GameMechs::GameMechs(const GameMechs& other) {
     input = other.input;
     exitFlag = other.exitFlag;
@@ -100,7 +93,7 @@ GameMechs::GameMechs(const GameMechs& other) {
     boardSizeY = other.boardSizeY;
 }
 
-//Copy Assignment Operator
+// Copy Assignment Operator: Copies data from the other GameMechs object
 GameMechs& GameMechs::operator=(const GameMechs& other) {
     if (this != &other) { // Check for self-assignment
         input = other.input;
